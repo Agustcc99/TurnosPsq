@@ -6,11 +6,24 @@ const ESTADO_COLORS = {
 };
 
 function TurnosTable({ turnos, cargando, onCambiarEstado, onEliminar }) {
-  const formatFecha = (isoString) => {
-    const d = new Date(isoString);
-    return d.toLocaleDateString();
+  const formatFecha = (valor) => {
+    if (!valor) return "";
+  
+    // 1) Si viene como "2025-12-10T00:00:00.000Z", me quedo con la parte de la fecha
+    const soloFecha = valor.split("T")[0]; // -> "2025-12-10" o ya "2025-12-10"
+  
+    // 2) Ahora espero tener "YYYY-MM-DD"
+    const partes = soloFecha.split("-");
+    if (partes.length !== 3) {
+      // Si no tiene ese formato, devuelvo tal cual para no romper nada
+      return valor;
+    }
+  
+    const [year, month, day] = partes;
+  
+    return `${day}/${month}/${year}`; // 10/12/2025
   };
-
+  
   if (cargando) {
     return (
       <div className="text-center py-3">
@@ -51,7 +64,9 @@ function TurnosTable({ turnos, cargando, onCambiarEstado, onEliminar }) {
               <td>{t.siniestro}</td>
               <td>
                 <span
-                  className={`badge bg-${ESTADO_COLORS[t.estado] || "secondary"}`}
+                  className={`badge bg-${
+                    ESTADO_COLORS[t.estado] || "secondary"
+                  }`}
                 >
                   {t.estado}
                 </span>

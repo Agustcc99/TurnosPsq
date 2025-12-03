@@ -54,7 +54,7 @@ function TurnosLayout({ user, onLogout }) {
         <div>
           <h2 className="mb-0">Gestión de turnos</h2>
           <small className="text-muted">
-            Sesión: {user.username} ({user.role})
+            {user.username} 
           </small>
         </div>
         <button className="btn btn-outline-secondary btn-sm" onClick={onLogout}>

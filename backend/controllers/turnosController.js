@@ -51,12 +51,25 @@ export const listarTurnos = async (req, res) => {
 
     const turnos = await Turno.find(filtro).sort({ fecha: 1, hora: 1 });
 
-    return res.json(turnos);
+    // 🔹 Convertimos la fecha a string "YYYY-MM-DD" para evitar líos de timezone
+    const turnosLimpios = turnos.map((t) => {
+      const obj = t.toObject();
+
+      if (obj.fecha instanceof Date) {
+        // toISOString() siempre es UTC → mantiene el día pedido en el input
+        obj.fecha = obj.fecha.toISOString().slice(0, 10); // "2025-12-03"
+      }
+
+      return obj;
+    });
+
+    return res.json(turnosLimpios);
   } catch (error) {
     console.error("Error al listar turnos:", error);
     return res.status(500).json({ message: "Error interno al listar turnos" });
   }
 };
+
 
 export const actualizarEstado = async (req, res) => {
   try {
